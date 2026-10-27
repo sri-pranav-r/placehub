@@ -1,0 +1,21 @@
+{
+  "name": "placement-tracker",
+  "version": "1.0.0",
+  "description": "Placement & Internship Tracker - Express + MongoDB with CRUD, $lookup/$merge aggregations, JSearch and Gemini API integrations",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch-path=server.js --watch-path=config --watch-path=middleware --watch-path=models --watch-path=routes --watch-path=services server.js",
+    "seed": "node seed.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "dotenv": "^16.4.7",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^8.9.5"
+  },
+  "devDependencies": {
+    "mongodb-memory-server": "^10.1.4"
+  }
+}
