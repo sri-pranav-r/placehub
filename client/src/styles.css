@@ -34,33 +34,7 @@
   --shadow-sm: 0 1px 3px rgb(17 30 45 / 0.06);
   --shadow-lg: 0 24px 60px -16px rgb(17 30 45 / 0.22);
   --sidebar-w: 240px;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --ink: #0a121c;
-    --logo-bg: #2d69de;
-    --bg: #0d141d;
-    --surface: #142030;
-    --surface-2: #101a27;
-    --border: #23324a;
-    --border-strong: #34465e;
-    --text: #eef3f8;
-    --text-2: #c8d2de;
-    --muted: #94a2b3;
-    --primary: #5b8def;
-    --primary-hover: #7ea6f4;
-    --primary-soft: #16274a;
-    --primary-text: #9dbcf7;
-    --green: #34d399;   --green-soft: #0b2a21;
-    --red: #f87171;     --red-soft: #351616;
-    --amber: #fbbf24;   --amber-soft: #33270b;
-    --blue: #8fb8ff;    --blue-soft: #14223d;
-    --teal: #2dd4bf;    --teal-soft: #0b2b29;
-    --gray-soft: #22262e;
-    --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
-    --shadow-lg: 0 12px 32px -8px rgb(0 0 0 / 0.6);
-  }
+  color-scheme: light; /* the site is light-only, even when the OS is in dark mode */
 }
 
 /* ============ Base ============ */
@@ -538,7 +512,6 @@ input[type='checkbox'] { width: 16px; height: 16px; margin: 2px 0 0; padding: 0;
 
 /* Dark workspace section */
 .lp-workspace { padding: 96px 0 104px; color: #f3f7fb; background: var(--ink); border-block: 1px solid var(--ink); }
-@media (prefers-color-scheme: dark) { .lp-workspace { border-color: var(--border); } }
 .lp-section-head { display: grid; grid-template-columns: 1.3fr 0.7fr; gap: 56px; align-items: end; }
 .lp-section-head h2 { font-size: clamp(32px, 3.8vw, 50px); font-weight: 750; letter-spacing: -0.045em; line-height: 1.1; }
 .lp-section-head > p { max-width: 400px; font-size: 15.5px; line-height: 1.75; color: var(--muted); }

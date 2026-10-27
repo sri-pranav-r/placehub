@@ -142,7 +142,7 @@ client/
       Landing.jsx Login.jsx Register.jsx Jobs.jsx
       admin/                 Dashboard, Students, Companies, Drives, Applications
       student/               Overview, Drives, Profile (+ MyApplications)
-    styles.css               design system (light + dark mode)
+    styles.css               design system (light theme)
 ```
 
 ## Data model

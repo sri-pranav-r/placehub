@@ -51,7 +51,7 @@ PlaceHub is a web application for campus placements. Students see the placement 
 - Every API route checks the user's role: students cannot open admin routes (403), and requests without a token are refused (401).
 - API keys for third-party services stay on the server and are never sent to the browser.
 - Input is validated in the browser (required fields, number ranges) and again on the server (Mongoose schema rules). Errors are shown as clear messages.
-- The interface works on phones (375 px) and desktops, in light and dark mode.
+- The interface works on phones (375 px) and desktops. It uses a light theme only.
 
 ## 5. Wireframes
 
