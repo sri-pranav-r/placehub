@@ -47,7 +47,7 @@ npm run dev
 - Website: http://localhost:5173 (React dev server)
 - API: http://localhost:5000 (Express)
 
-With `MONGO_URI=memory` (the default) the API starts a built-in MongoDB, so nothing else needs installing. Its data is kept in `server/.data` (not committed), so it survives restarts. Sample data is loaded the first time it starts; run `npm run seed` to reset to the sample data, or delete `server/.data` to start empty. The first `npm run install-all` downloads the database engine (a few hundred MB), so it can take several minutes; later starts take seconds.
+With `MONGO_URI=memory` (the default) the API starts a built-in MongoDB, so nothing else needs installing. Its data is kept in `server/.data` (not committed), so it survives restarts. Sample data is loaded the first time it starts. To reset to the sample data, stop the site (Ctrl+C), run `npm run seed`, then start it again; only one process can open the built-in database at a time. Delete `server/.data` to start empty. The first `npm run install-all` downloads the database engine (a few hundred MB), so it can take several minutes; later starts take seconds.
 
 If `JWT_SECRET` is left empty, the server generates one on first start and keeps it in `server/.data/jwt-secret`, so logins survive restarts.
 
