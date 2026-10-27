@@ -6,9 +6,16 @@ const express = require('express');
 const connectDB = require('./config/db');
 const { requireAuth, requireRole, adminForWrites } = require('./middleware/auth');
 
+// No JWT_SECRET in .env: generate one once and keep it in server/.data (git-ignored),
+// so logins survive restarts without any setup step
 if (!process.env.JWT_SECRET) {
-  process.env.JWT_SECRET = crypto.randomBytes(32).toString('hex');
-  console.warn('JWT_SECRET not set in .env - using a random one (everyone is logged out on restart)');
+  const secretFile = path.join(__dirname, '.data', 'jwt-secret');
+  if (!fs.existsSync(secretFile)) {
+    fs.mkdirSync(path.dirname(secretFile), { recursive: true });
+    fs.writeFileSync(secretFile, crypto.randomBytes(32).toString('hex'));
+  }
+  process.env.JWT_SECRET = fs.readFileSync(secretFile, 'utf8').trim();
+  console.log('JWT_SECRET not set in .env - using the generated secret in server/.data/jwt-secret');
 }
 
 const app = express();

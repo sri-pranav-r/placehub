@@ -47,7 +47,14 @@ npm run dev
 - Website: http://localhost:5173 (React dev server)
 - API: http://localhost:5000 (Express)
 
-With `MONGO_URI=memory` (the default) the API starts a built-in MongoDB, so nothing else needs installing. Its data is kept in `server/.data` (not committed), so it survives restarts. Sample data is loaded the first time it starts; run `npm run seed` to reset to the sample data, or delete `server/.data` to start empty.
+With `MONGO_URI=memory` (the default) the API starts a built-in MongoDB, so nothing else needs installing. Its data is kept in `server/.data` (not committed), so it survives restarts. Sample data is loaded the first time it starts; run `npm run seed` to reset to the sample data, or delete `server/.data` to start empty. The first `npm run install-all` downloads the database engine (a few hundred MB), so it can take several minutes; later starts take seconds.
+
+If `JWT_SECRET` is left empty, the server generates one on first start and keeps it in `server/.data/jwt-secret`, so logins survive restarts.
+
+### Persistent database
+
+- **Local MongoDB**: set `MONGO_URI=mongodb://127.0.0.1:27017/placementdb` in `server/.env`, then `npm run seed`
+- **MongoDB Atlas**: paste your `mongodb+srv://...` string into `MONGO_URI`, then `npm run seed`
 
 ### Demo logins (seeded, test-only)
 
@@ -92,18 +99,13 @@ npm run check:ui
 
 This scans the site's source for banned patterns: em/en dashes, emoji, gradients, purple colours, pill-shaped radii, decorative animations, "Made with / Built with" tags and cursor effects. It exits with an error if it finds any.
 
-### Persistent database
-
-- **Local MongoDB**: set `MONGO_URI=mongodb://127.0.0.1:27017/placementdb` in `server/.env`, then `npm run seed`
-- **MongoDB Atlas**: paste your `mongodb+srv://...` string into `MONGO_URI`, then `npm run seed`
-
 ## Environment variables (`server/.env`)
 
 | Key | Purpose |
 |---|---|
 | `PORT` | API port (default 5000) |
 | `MONGO_URI` | `memory`, a local MongoDB or an Atlas URI |
-| `JWT_SECRET` | Signs login tokens. Generate one with `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` |
+| `JWT_SECRET` | Signs login tokens. Optional in development (generated automatically, see above). For production, set your own: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` |
 | `RAPIDAPI_KEY` | JSearch: https://rapidapi.com/letscrape-6bRBa3QguO5/api/jsearch → Subscribe (free) |
 | `GEMINI_API_KEY` | Gemini: https://aistudio.google.com/app/apikey |
 | `GEMINI_MODEL` | Defaults to `gemini-2.5-flash`. If you get a 404, change it to a current model from AI Studio. |
@@ -155,7 +157,7 @@ Company 1 ── * Drive 1 ── * Application * ── 1 Student
 - **User**: login account (`role`: admin | student), bcrypt-hashed password
 - **Drive**: eligibility criteria `minCgpa`, `maxBacklogs`, `branches` (empty = all)
 - **Application**: unique on `(student, drive)`. `student.placed` updates automatically from offers.
-- **Cascades**: deleting a company removes its drives and their applications. Deleting a student removes their applications and login account.
+- **Cascades**: deleting a company removes its drives and their applications. Deleting a drive removes its applications. Deleting a student removes their applications and login account.
 
 ## API
 
@@ -199,7 +201,7 @@ Company 1 ── * Drive 1 ── * Application * ── 1 Student
 ## Demo flow (for the viva)
 
 1. **Landing page** → live stats from MongoDB → **Log in** as the admin.
-2. **Dashboard** → application pipeline → click **Run $merge** on both reports (open `branchstats` / `placementstats` in Compass to show the written collections).
+2. **Dashboard** → application pipeline → click **Run $merge** on both reports. The tables underneath are read back from the `branchstats` and `placementstats` collections that `$merge` just wrote.
 3. **Students** → the target icon on Ananya's row shows eligible drives (`$lookup`) → **Apply**.
 4. **Students** → **Merge duplicates** → **Select** Rahul's pair → **Merge records**.
 5. **Applications** → change a status to `offered` → the student shows as "placed".
