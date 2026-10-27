@@ -108,6 +108,9 @@ if (require.main === module) {
       console.error(err);
       process.exitCode = 1;
     } finally {
+      // The built-in database is stopped abruptly (on Windows the process is killed), so flush
+      // every write to disk first; otherwise the last writes (the final demo login) can be lost
+      if (mongo) await mongoose.connection.db.admin().command({ fsync: 1 }).catch(() => {});
       await mongoose.disconnect();
       if (mongo) await mongo.stop({ doCleanup: false }); // keep the data files
     }
