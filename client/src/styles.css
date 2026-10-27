@@ -5,7 +5,6 @@
 
   /* Navy ink, cool paper, one blue accent and a small lime highlight */
   --ink: #111e2d;
-  --logo-bg: #111e2d;
   --lime: #d6f567;
   --bg: #f2f8fb;
   --surface: #ffffff;
@@ -257,7 +256,7 @@ input[type='checkbox'] { width: 16px; height: 16px; margin: 2px 0 0; padding: 0;
 /* ============ Logo ============ */
 .logo { display: inline-flex; align-items: center; gap: 9px; color: var(--text); font-weight: 800; font-size: 17px; }
 .logo:hover { text-decoration: none; }
-.logo-mark { width: 30px; height: 30px; border-radius: var(--radius-sm); display: grid; place-items: center; color: #fff; background: var(--primary); }
+.logo-mark { flex-shrink: 0; display: block; }
 
 /* ============ Page header, cards, stats ============ */
 .page-header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 22px; }
@@ -465,7 +464,6 @@ input[type='checkbox'] { width: 16px; height: 16px; margin: 2px 0 0; padding: 0;
 .mobile-nav a:not(.btn) { padding: 10px 0; color: var(--text); font-weight: 600; }
 .mobile-nav .btn { margin-top: 8px; }
 .public .logo { font-size: 19px; }
-.public .logo-mark { background: var(--logo-bg); }
 
 /* Hero */
 .lp-hero { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 64px; align-items: center; padding: 80px 0 88px; }
