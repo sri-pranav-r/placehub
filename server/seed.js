@@ -83,17 +83,33 @@ async function seed() {
 module.exports = { seed };
 
 if (require.main === module) {
-  require('dotenv').config();
+  require('dotenv').config({ override: true });
   const mongoose = require('mongoose');
   const connectDB = require('./config/db');
-  connectDB()
-    .then(async ({ builtIn }) => {
-      if (builtIn) console.log('Resetting the built-in development database to the sample data.');
+  const usesBuiltIn = !process.env.MONGO_URI || process.env.MONGO_URI === 'memory';
+  const apiUrl = `http://localhost:${process.env.PORT || 5000}/api/meta`;
+  const apiIsRunning = () => fetch(apiUrl, { signal: AbortSignal.timeout(1500) }).then(() => true, () => false);
+
+  (async () => {
+    // Only one process can open the built-in database at a time
+    if (usesBuiltIn && (await apiIsRunning())) {
+      console.error('The site is still running and has the built-in database open.');
+      console.error('Stop it first (Ctrl+C in the terminal running "npm run dev"), then run "npm run seed" again.');
+      process.exitCode = 1;
+      return;
+    }
+    let mongo;
+    try {
+      const conn = await connectDB();
+      mongo = conn.mongo;
+      if (conn.builtIn) console.log('Resetting the built-in development database to the sample data.');
       await seed();
-    })
-    .catch((err) => {
+    } catch (err) {
       console.error(err);
       process.exitCode = 1;
-    })
-    .finally(() => mongoose.disconnect());
+    } finally {
+      await mongoose.disconnect();
+      if (mongo) await mongo.stop({ doCleanup: false }); // keep the data files
+    }
+  })();
 }

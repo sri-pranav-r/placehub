@@ -25,18 +25,18 @@ async function startBuiltInMongo() {
 // development database so the project runs without installing MongoDB.
 async function connectDB() {
   let uri = process.env.MONGO_URI;
-  let builtIn = false;
+  let mongo = null;
 
   if (!uri || uri === 'memory') {
-    const mongo = await startBuiltInMongo();
+    mongo = await startBuiltInMongo();
     uri = mongo.getUri('placementdb');
-    builtIn = true;
     console.log(`Using the built-in development MongoDB (data kept in ${path.relative(process.cwd(), DATA_DIR)})`);
   }
 
   await mongoose.connect(uri);
   console.log(`MongoDB connected: ${mongoose.connection.name}`);
-  return { builtIn };
+  // `mongo` is the built-in database process (null for a real MongoDB), so scripts can stop it
+  return { builtIn: Boolean(mongo), mongo };
 }
 
 module.exports = connectDB;
