@@ -17,6 +17,10 @@ router.get('/status', (req, res) => {
   res.json({ jsearch: Boolean(process.env.RAPIDAPI_KEY), gemini: Boolean(process.env.GEMINI_API_KEY) });
 });
 
+// Listings come from many job boards and often contain en/em dashes ("Full\u2013time");
+// the site's text uses plain hyphens
+const plain = (text) => (text || '').replace(/[\u2013\u2014]/g, '-');
+
 // JSearch (RapidAPI): live job & internship listings
 // GET /api/external/jobs?query=react intern in Bangalore
 router.get('/jobs', async (req, res) => {
@@ -24,7 +28,8 @@ router.get('/jobs', async (req, res) => {
   if (!key) return missingKey(res, 'RAPIDAPI_KEY');
 
   const query = String(req.query.query || 'software engineer intern in Bangalore').slice(0, 120);
-  const url = new URL('https://jsearch.p.rapidapi.com/search');
+  // /search-v2 replaced /search (which now returns 404)
+  const url = new URL('https://jsearch.p.rapidapi.com/search-v2');
   url.search = new URLSearchParams({ query, page: '1', num_pages: '1', country: 'in', date_posted: 'month' });
 
   const response = await fetch(url, {
@@ -33,18 +38,19 @@ router.get('/jobs', async (req, res) => {
   if (!response.ok) {
     return res.status(502).json({ error: `JSearch API returned ${response.status}`, detail: await response.text() });
   }
-  const { data = [] } = await response.json();
+  const { data } = await response.json();
+  const jobs = data?.jobs || [];
   res.json(
-    data.map((job) => ({
+    jobs.map((job) => ({
       id: job.job_id,
-      title: job.job_title,
-      company: job.employer_name,
+      title: plain(job.job_title),
+      company: plain(job.employer_name),
       logo: job.employer_logo,
-      location: [job.job_city, job.job_state, job.job_country].filter(Boolean).join(', '),
-      type: job.job_employment_type,
+      location: plain([job.job_city, job.job_state, job.job_country].filter(Boolean).join(', ')),
+      type: plain(job.job_employment_type),
       applyLink: job.job_apply_link,
       postedAt: job.job_posted_at_datetime_utc,
-      description: (job.job_description || '').slice(0, 300),
+      description: plain(job.job_description).slice(0, 300),
     }))
   );
 });
