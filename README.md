@@ -108,7 +108,7 @@ This scans the site's source for banned patterns: em/en dashes, emoji, gradients
 | `JWT_SECRET` | Signs login tokens. Optional in development (generated automatically, see above). For production, set your own: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` |
 | `RAPIDAPI_KEY` | JSearch: https://rapidapi.com/letscrape-6bRBa3QguO5/api/jsearch → Subscribe (free) |
 | `GEMINI_API_KEY` | Gemini: https://aistudio.google.com/app/apikey |
-| `GEMINI_MODEL` | Defaults to `gemini-2.5-flash`. If you get a 404, change it to a current model from AI Studio. |
+| `GEMINI_MODEL` | Defaults to `gemini-3.8-flash`. If you get a 404, change it to a current model from AI Studio. |
 
 API keys never reach the browser. React calls `/api/external/...` or `/api/me/resume-review`, and Express calls the third-party API using the key from `.env`.
 
