@@ -17,9 +17,14 @@ router.get('/status', (req, res) => {
   res.json({ jsearch: Boolean(process.env.RAPIDAPI_KEY), gemini: Boolean(process.env.GEMINI_API_KEY) });
 });
 
-// Listings come from many job boards and often contain en/em dashes ("Full\u2013time");
-// the site's text uses plain hyphens
-const plain = (text) => (text || '').replace(/[\u2013\u2014]/g, '-');
+// Listings come from many job boards and often contain en/em dashes ("Full\u2013time") and emoji;
+// the site's text uses plain hyphens and no emoji
+const plain = (text) =>
+  (text || '')
+    .replace(/[\u2013\u2014]/g, '-')
+    .replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}\u{200D}]/gu, '')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
 
 // JSearch (RapidAPI): live job & internship listings
 // GET /api/external/jobs?query=react intern in Bangalore
