@@ -6,13 +6,15 @@ import { fmtDate, lpa } from '../../utils';
 
 const STEPS = ['applied', 'shortlisted', 'interview', 'offered'];
 
-// Progress dots: applied → shortlisted → interview → offered
+// Progress dots: applied → shortlisted → interview → offered.
+// A rejected application is not one of these stages, so the whole bar turns red.
 function Progress({ status }) {
-  const reached = STEPS.indexOf(status);
+  const rejected = status === 'rejected';
+  const reached = rejected ? STEPS.length - 1 : STEPS.indexOf(status);
   return (
-    <div className={`progress-steps ${status === 'rejected' ? 'is-rejected' : ''}`}>
+    <div className={`progress-steps ${rejected ? 'is-rejected' : ''}`}>
       {STEPS.map((s, i) => (
-        <span key={s} className={i <= reached ? 'done' : ''} title={s} />
+        <span key={s} className={i <= reached ? 'done' : ''} title={rejected ? 'rejected' : s} />
       ))}
     </div>
   );
